@@ -330,7 +330,7 @@
                            
                         <div class="cert__model">
                            <h2 class="cert__title">VIEW PAGE</h2>
-                           <a href="" class="cert__button" id="ngo-link">
+                           <a href="" class="cert__button" id="ngo-link" >
                               View Details <i class="ri-external-link-line"></i>
                            </a>
                         </div>             
@@ -345,7 +345,7 @@
                            
                         <div class="cert__model">
                            <h2 class="cert__title">VIEW PAGE</h2>
-                           <a href="" class="cert__button" id="state-portal-link">
+                           <a href="" class="cert__button" id="state-portal-link" target="_top">
                               View Details <i class="ri-external-link-line"></i>
                            </a>
                         </div>             
@@ -360,7 +360,7 @@
                            
                         <div class="cert__model">
                            <h2 class="cert__title">VIEW PAGE</h2>
-                           <a href="" class="cert__button" id="disaster-management-link">
+                           <a href="" class="cert__button" id="disaster-management-link" target="_top">
                               View Details <i class="ri-external-link-line"></i>
                            </a>
                         </div>             
@@ -628,12 +628,12 @@
                 }
                 @media screen and (max-width: 470px) {
                     .cert__img{
-                        width: 240px;
+                        width: 260px;
                         height: 200px;
                     }  
 
                     .cert__card{
-                        width: 240px;
+                        width: 260px;
                         height: 200px;
                     }
                     
@@ -654,13 +654,13 @@
             <h4 class="section__title">
                 Contact Us In Immediate Emergency
             </h4>
-            <form action=" " class="contact__form" id="contact-form">
+            <form action=" " class="contact__form" id="contact-form" onsubmit="validateForm(event)">
                 <div class="contact__group">
                     <input type="text" name="user_name" required placeholder="Enter your Name" class="contact__input" >
                     <input type="number" name="user_number" required placeholder="Enter your Mobile Number" required maxlength="10"
-                        class="contact__input">
+                    pattern="\d{10}"  class="contact__input">
                     <input type="number" name="user_adhar" required placeholder="Enter your Aadhaar Number" required maxlength="12"
-                        class="contact__input">
+                    pattern="\d{12}"    class="contact__input">
                     <div>
                         <label for="City">
                         <input type="text" name="user_City" list="mylist" class="contact__input" placeholder="Enter City" size="2" name="City"
@@ -1531,7 +1531,7 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!--Email js script-->
     <script>
-        const contactForm = document.getElementById('contact-form');
+        /*const contactForm = document.getElementById('contact-form');
         contactMessage = document.getElementById('contact-message');
 
         const sendEmail = (e) => {
@@ -1554,7 +1554,63 @@
                 })
         }
 
-        contactForm.addEventListener('submit', sendEmail)
+        contactForm.addEventListener('submit', sendEmail)*/
+
+
+        function validateAndSubmitForm(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            var contact = document.querySelector("input[name='user_number']").value;
+            var aadhar = document.querySelector("input[name='user_adhar']").value;
+            var firstName = document.querySelector("input[name='user_name']").value;
+            var City = document.querySelector("input[name='user_City']").value;
+
+            var isValid = true;
+
+            if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+){0,5}$/.test(firstName)) {
+                swal("Oops!", "First Name should contain only text characters and a maximum of five spaces", "error");
+                isValid = false;
+            } 
+            
+            if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+){0,5}$/.test(City)) {
+                swal("Oops!", "City should contain only text characters and a maximum of five spaces", "error");
+                isValid = false;
+            } 
+            
+            if (!/^\d+$/.test(contact) || contact.length !== 10) {
+                swal("Oops!", "Please enter a valid 10-digit Contact Number", "error");
+                isValid = false;
+            }
+            
+            if (!/^\d+$/.test(aadhar) || aadhar.length !== 12) {
+                swal("Oops!", "Please enter a valid 12-digit Aadhar Number", "error");
+                isValid = false;
+            }
+
+            if (isValid) {
+                // If all validations pass, send the email
+                emailjs.sendForm('service_ytexvg9', 'template_qp04uwr', '#contact-form', 'YDWtLkFkKipx7r6EF')
+                    .then(() => {
+                        swal("Congrats", "Message Received Successfully, We Will Contact You Soon", "success");
+                        
+                        setTimeout(() => {
+                            document.getElementById('contact-message').textContent = '';
+                        }, 5000);
+
+                        document.getElementById('contact-form').reset();
+
+                    }, () => {
+                        swal("Oops!", "There Was An Issue Sending The Message! Please Check Network and Try Again", "error");
+                    });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('contact-form').addEventListener('submit', validateAndSubmitForm);
+        });
+
+
+
 
     </script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
